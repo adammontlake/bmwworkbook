@@ -27,10 +27,7 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "value": [
-              "/subscriptions/549d4d62-88b9-4a06-9831-8fb73da91f88"
-            ]
+            "resourceType": "microsoft.resourcegraph/resources"
           },
           {
             "id": "e94aafa3-c5d9-4523-89f0-4e87aa754511",
@@ -56,7 +53,10 @@
               "showDefault": false
             },
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": [
+              "value::all"
+            ]
           },
           {
             "id": "c4b69c01-2263-4ada-8d9c-43433b739ff3",
@@ -154,11 +154,12 @@
             ],
             "isHiddenWhenLocked": true,
             "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources"
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "# 100 / 1994"
           }
         ],
         "style": "above",
-        "queryType": 1,
+        "queryType": 0,
         "resourceType": "microsoft.resourcegraph/resources"
       },
       "name": "Parameter block"
@@ -185,7 +186,7 @@
               ],
               "timeContextFromParameter": "TimeRange",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 14400000
               },
               "metrics": [
                 {
@@ -314,6 +315,22 @@
                   {
                     "columnId": "microsoft.compute/virtualmachines--Percentage CPU Timeline",
                     "label": "Percentage CPU Timeline"
+                  },
+                  {
+                    "columnId": "CPU Credits Remaining",
+                    "label": "CPU Credits Remaining"
+                  },
+                  {
+                    "columnId": "CPU Credits Remaining Timeline",
+                    "label": "CPU Credits Remaining Timeline"
+                  },
+                  {
+                    "columnId": "CPU Credits Consumed",
+                    "label": "CPU Credits Consumed"
+                  },
+                  {
+                    "columnId": "CPU Credits Consumed Timeline",
+                    "label": "CPU Credits Consumed Timeline"
                   }
                 ]
               },
@@ -326,6 +343,133 @@
         ]
       },
       "name": "CPU Credits Remaining"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources |\r\nwhere type == 'microsoft.compute/virtualmachines' |\r\nwhere properties.hardwareProfile.vmSize contains \"B\" | \r\nproject id, name, properties.hardwareProfile.vmSize\r\n",
+        "size": 0,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{VirtualMachines}"
+        ]
+      },
+      "name": "B series VMs"
+    },
+    {
+      "type": 10,
+      "content": {
+        "chartId": "workbook51e06d21-7bc9-4918-ba85-800d3df82b8c",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 0,
+        "resourceType": "microsoft.compute/virtualmachines",
+        "metricScope": 0,
+        "resourceParameter": "VirtualMachines",
+        "resourceIds": [
+          "{VirtualMachines}"
+        ],
+        "timeContext": {
+          "durationMs": 3600000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.compute/virtualmachines",
+            "metric": "microsoft.compute/virtualmachines--CPU Credits Remaining",
+            "aggregation": 4
+          }
+        ],
+        "gridFormatType": 1,
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "Location",
+            "formatter": 13
+          },
+          "leftContent": {
+            "columnMatch": "Value",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "mapSettings": {
+          "locInfo": "AzureLoc",
+          "sizeSettings": "Value",
+          "sizeAggregation": "Sum",
+          "legendMetric": "Value",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "type": "heatmap",
+            "colorAggregation": "Sum",
+            "nodeColorField": "Value",
+            "heatmapPalette": "greenRed"
+          },
+          "labelSettings": "Location",
+          "locInfoColumn": "Location"
+        },
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Subscription",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Location",
+              "formatter": 17
+            },
+            {
+              "columnMatch": ".*\\/CPU Credits Remaining$",
+              "formatter": 1
+            },
+            {
+              "columnMatch": "Name",
+              "formatter": 13,
+              "formatOptions": {
+                "linkTarget": "Resource"
+              }
+            },
+            {
+              "columnMatch": "Metric",
+              "formatter": 1
+            },
+            {
+              "columnMatch": "Aggregation",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "Value",
+              "formatter": 1
+            },
+            {
+              "columnMatch": "Timeline",
+              "formatter": 9
+            }
+          ],
+          "rowLimit": 10000
+        }
+      },
+      "name": "cpu credits - v"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\",\"mergeType\":\"inner\",\"leftTable\":\"B series VMs\",\"rightTable\":\"cpu credits - v\",\"leftColumn\":\"id\",\"rightColumn\":\"Name\"}],\"projectRename\":[{\"originalName\":\"[B series VMs].id\",\"mergedName\":\"id\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].type\",\"mergedName\":\"type\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].tenantId\",\"mergedName\":\"tenantId\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].kind\",\"mergedName\":\"kind\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].resourceGroup\",\"mergedName\":\"resourceGroup\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].subscriptionId\",\"mergedName\":\"subscriptionId\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].managedBy\",\"mergedName\":\"managedBy\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].sku\",\"mergedName\":\"sku\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].plan\",\"mergedName\":\"plan\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].properties\",\"mergedName\":\"properties\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].tags\",\"mergedName\":\"tags\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].identity\",\"mergedName\":\"identity\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].zones\",\"mergedName\":\"zones\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].extendedLocation\",\"mergedName\":\"extendedLocation\",\"fromId\":\"unknown\"},{\"originalName\":\"[B series VMs].name\",\"mergedName\":\"name\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[B series VMs].properties_hardwareProfile_vmSize\",\"mergedName\":\"properties_hardwareProfile_vmSize\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Subscription\",\"mergedName\":\"Subscription\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Metric\",\"mergedName\":\"Metric\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Aggregation\",\"mergedName\":\"Aggregation\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Value\",\"mergedName\":\"Value\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Timeline\",\"mergedName\":\"Timeline\",\"fromId\":\"255a09c0-6ac3-4bbb-b0dd-da443c84aa72\"},{\"originalName\":\"[cpu credits - v].Name\"},{\"originalName\":\"[cpu credits - v].Segment Field\"},{\"originalName\":\"[cpu credits - v].Segment\"},{\"originalName\":\"[cpu credits - v].Namespace\"},{\"originalName\":\"[cpu credits - v].Metric ID\"},{\"originalName\":\"[B series VMs].location\"}]}",
+        "size": 0,
+        "queryType": 7
+      },
+      "name": "query - 4"
     }
   ],
   "fallbackResourceIds": [
